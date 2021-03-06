@@ -1,0 +1,237 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        mobileNo:
+          type: string
+        location:
+          type: string
+        skills:
+          type: array
+        notificationPreference:
+          type: string
+        serviceId:
+          type: string
+        isAvailableForHelp:
+          type: boolean
+        status:
+          type: active
+        profileImage:
+          type: string
+        gender:
+          type: string
+        dob:
+          type: string
+        creaId:
+          type: string
+        experience:
+          type: string
+        designation:
+          type: string
+        branchAddress:
+          type: object
+          properties:
+            address:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            country:
+              type: string
+            postalCode:
+              type: string
+        brokerageName:
+          type: string
+      example:
+        id: 5ebac534954b54139806c112
+        email: fake@example.com
+        firstName: fake
+        lastName: name
+        role: user
+        mobileNo: 99999999
+        location: 10-123 1/2 MAIN STREET NW, MONTREAL QC  H3Z 2Y7, CANADA
+        skills: ["Industrial"]
+        notificationPreference: push
+        isAvailableForHelp: true
+        status: active
+        gender: male
+        dob: 01-01-2020
+        creaId: 123@xyz
+        experience: 0-5yrs
+        designation: Accredited Buyer's Representative
+        branchAddress:
+          {
+            address: 10-123 1/2 MAIN STREET NW,
+            city: MONTREAL,
+            state: QC,
+            country: CANADA,
+            postalCode: H3Z 2Y7,
+          }
+        brokerageName: Cardinal Realty
+
+    ServiceType:
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: Writing an offer
+
+    Service:
+      type: object
+      properties:
+        serviceType:
+          type: string
+        propertyAddress:
+          type: array
+          items:
+            type: object
+            properties:
+              address: String,
+              city: String,
+              state: String,
+              country: String,
+              postalCode: String,
+        paymentType:
+          type: string
+        date:
+          type: string
+        time:
+          type: string
+        requiredSkillSet:
+          type: string
+        specification:
+          type: string
+        postBy:
+          type: string
+        postOn:
+          type: string
+        hourlyRate:
+          type: number
+        flatFee:
+          type: string
+        mlsId:
+          type: string
+        agentId:
+          type: string
+        status:
+          type: string
+      example:
+        serviceType: Writing an offer
+        propertyAddress:
+          [
+            {
+              address: 10-123 1/2 MAIN STREET NW,
+              city: MONTREAL,
+              state: QC,
+              country: CANADA,
+              postalCode: H3Z 2Y7,
+            },
+          ]
+        paymentType: hourly or flat
+        date: 01/01/1999
+        time: "12:00"
+        requiredSkillSet: ["Industrial"]
+        specification: Write Specification
+        postBy: 5f73155e334cb944cc9e20ff
+        postOn: marketPlace
+        hourlyRate: 20
+        flatFee: 200
+        mlsId: xyz@123
+        agentId: 5ebac534954b54139806c112
+        status: pending
+
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+        expires:
+          type: string
+          format: date-time
+      example:
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWJhYzUzNDk1NGI1NDEzOTgwNmMxMTIiLCJpYXQiOjE1ODkyOTg0ODQsImV4cCI6MTU4OTMwMDI4NH0.m1U63blB0MLej_WfB7yC2FTMnCziif9X8yzwDEfJXAg
+        expires: 2020-05-12T16:18:04.793Z
+
+    AuthTokens:
+      type: object
+      properties:
+        access:
+          $ref: "#/components/schemas/Token"
+        refresh:
+          $ref: "#/components/schemas/Token"
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+
+  responses:
+    DuplicateEmail:
+      description: Email already taken
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 400
+            message: Email already taken
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 401
+            message: Please authenticate
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 403
+            message: Forbidden
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 404
+            message: Not found
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 400
+            message: Internal server error
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
